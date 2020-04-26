@@ -1,0 +1,42 @@
+#!/bin/sh
+
+log() {
+  [ "$logging" ] && printf 'debug: %s\n' "$@" >&2
+}
+
+if [ "$1" = --debug ]; then
+  logging=true
+fi
+
+mapping_file="${XDG_CONFIG_HOME-$HOME/.config}/pass-git-helper/mapping.txt"
+
+if [ "$1" = --mapping ]; then
+  shift
+  mapping_file="${1-$mapping_file}"
+  shift
+fi
+
+log "Using mapping file: $mapping_file"
+
+if [ "$1" != get ]; then
+  log "Action not 'get', exiting"
+  exit 0
+fi
+
+while read -r this_line; do
+  log "Received: $this_line"
+  case $this_line in
+    host=*)
+      target="${this_line#host=}"
+      pass_entry="$(awk -v t="$target" '$1 == t { print $2 }' "$mapping_file")"
+      if [ "$pass_entry" ]; then
+        log "Pass entry found: $pass_entry"
+        printf 'password=%s\n' "$(pass show "$pass_entry")"
+      else
+        log "Could not find a pass entry"
+        return 1
+      fi
+      ;;
+    *) log "Ignoring..."
+  esac
+done
