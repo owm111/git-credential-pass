@@ -6,6 +6,7 @@ log() {
 
 if [ "$1" = --debug ]; then
   logging=true
+  shift
 fi
 
 if [ "$1" != get ]; then
