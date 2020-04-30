@@ -1,0 +1,8 @@
+# Treat this file like the body of a sh case statement.
+#
+#     <pattern>) <print pass entry name> ;;
+#
+# For example:
+#
+#     foo.example.com) printf 'dev/foo-example' ;;
+#     *.example.com) printf 'dev/other-example' ;;
