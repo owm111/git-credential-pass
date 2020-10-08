@@ -1,18 +1,19 @@
 PREFIX ?= /usr
+LIBDIR ?= $(PREFIX)/lib
+SYSTEM_EXTENSION_DIR ?= $(LIBDIR)/password-store/extensions
 
-all: dist/pass-git-helper
+all: git-helper.bash
 
-dist/pass-git-helper: pass-git-helper
-	mkdir dist
-	cp -f pass-git-helper dist/pass-git-helper
-	chmod 755 dist/pass-git-helper
+git-helper.bash:
+	@echo no build
 
-install: dist/pass-git-helper
-	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	cp -f dist/pass-git-helper $(DESTDIR)$(PREFIX)/bin/pass-git-helper
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/pass-git-helper
+check: git-helper.bash
+	./test.sh
+
+install: git-helper.bash
+	install -Dm755 -t $(SYSTEM_EXTENSION_DIR) git-helper.bash
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/pass-git-helper
+	rm -f $(SYSTEM_EXENSION_DIR)/git-helper.bash
 
-.PHONY: all install uninstall
+.PHONY: all install uninstall check
