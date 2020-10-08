@@ -2,12 +2,9 @@ PREFIX ?= /usr
 
 all: dist/pass-git-helper
 
-cases.txt: cases.def.txt
-	cp cases.def.txt cases.txt
-
-dist/pass-git-helper: pass-git-helper cases.txt
+dist/pass-git-helper: pass-git-helper
 	mkdir dist
-	./insert-cases cases.txt < pass-git-helper > dist/pass-git-helper
+	cp -f pass-git-helper dist/pass-git-helper
 	chmod 755 dist/pass-git-helper
 
 install: dist/pass-git-helper

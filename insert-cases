@@ -1,9 +1,0 @@
-#!/bin/sh
-
-while read -r LINE; do
-  if [ "$LINE" = '##CASES##' ]; then
-    cat "$1"
-  else
-    printf '%s\n' "$LINE"
-  fi
-done
