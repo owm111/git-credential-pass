@@ -1,28 +1,19 @@
 {
-  description = "A git credential helper as a pass extension";
+  description = "A git credential helper for pass";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
 
   outputs = { self, nixpkgs }:
     let
       overlay = final: prev: {
-        pass = prev.pass.overrideAttrs (old: {
-          passthru = old.passthru //
-            (let
-              newExtensions = old.passthru.extensions // {
-                pass-git-helper = final.stdenv.mkDerivation {
-                  name = "pass-extension-git-helper";
-                  src = self;
-                  installFlags = [ "PREFIX=$(out)" ];
-                };
-              };
-              newWith = func:
-                old.passthru.withExtensions (p: func newExtensions);
-            in {
-              extensions = newExtensions;
-              withExtensions = newWith;
-            });
-        });
+        gitAndTools = prev.gitAndTools // {
+          git-credential-pass = final.stdenv.mkDerivation {
+            pname = "git-credential-pass";
+            version = "0.0.1";
+            src = self;
+            installFlags = [ "PREFIX=$(out)" ];
+          };
+        }; 
       };
 
       pkgs = import nixpkgs {
@@ -30,10 +21,10 @@
         overlays = [ overlay ];
       };
 
-      pkg = pkgs.pass.extensions.pass-git-helper;
+      pkg = pkgs.gitAndTools.git-credential-pass;
     in {
       inherit overlay;
-      packages.x86_64-linux.pass-extension-git-helper = pkg;
+      packages.x86_64-linux.git-credential-pass = pkg;
       defaultPackage.x86_64-linux = pkg;
     };
 }
