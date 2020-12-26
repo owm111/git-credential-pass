@@ -1,30 +1,21 @@
 {
   description = "A git credential helper for pass";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs }:
-    let
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.simpleFlake {
+      inherit self nixpkgs;
+      name = "git-credential-pass";
       overlay = final: prev: {
-        gitAndTools = prev.gitAndTools // {
+        git-credential-pass = {
           git-credential-pass = final.stdenv.mkDerivation {
             pname = "git-credential-pass";
             version = "0.0.1";
             src = self;
             installFlags = [ "PREFIX=$(out)" ];
           };
-        }; 
+        };
       };
-
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-        overlays = [ overlay ];
-      };
-
-      pkg = pkgs.gitAndTools.git-credential-pass;
-    in {
-      inherit overlay;
-      packages.x86_64-linux.git-credential-pass = pkg;
-      defaultPackage.x86_64-linux = pkg;
     };
 }
