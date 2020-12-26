@@ -9,9 +9,9 @@
       name = "git-credential-pass";
       overlay = final: prev: {
         git-credential-pass = {
-          git-credential-pass = final.stdenv.mkDerivation {
+          defaultPackage = final.stdenv.mkDerivation {
             pname = "git-credential-pass";
-            version = "0.0.1";
+            version = "0.1.0";
             src = self;
             installFlags = [ "PREFIX=$(out)" ];
           };
